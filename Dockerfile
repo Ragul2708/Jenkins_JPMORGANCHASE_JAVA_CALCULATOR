@@ -1,5 +1,5 @@
 # Use an official Maven image to build the app
-FROM maven:3.8.7-openjdk-17 AS build
+FROM maven:3.8.7-jdk-17 AS build
 
 # Set working directory inside the container
 WORKDIR /app
@@ -21,7 +21,7 @@ FROM openjdk:17-jdk-slim
 # Copy the jar from the build stage
 COPY --from=build /app/target/*.jar /app/calculator-app.jar
 
-# Expose port (if your app is web-based; if not, you can omit)
+# Expose port if needed
 EXPOSE 8080
 
 # Run the jar
