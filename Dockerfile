@@ -1,13 +1,14 @@
-# Build stage
-FROM maven:latest AS build
-WORKDIR /app
-COPY pom.xml .
-COPY src ./src
-RUN mvn clean package -DskipTests
+# Use a lightweight OpenJDK image
+FROM openjdk:17-jdk-alpine
 
-# Run stage
-FROM openjdk:latest
+# Set working directory inside the container
 WORKDIR /app
-COPY --from=build /app/target/*.jar ./calculator-app.jar
+
+# Copy the built JAR from your target folder into the container
+COPY target/calculator-1.0-SNAPSHOT.jar /app/calculator.jar
+
+# Expose the port your app will run on
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "calculator-app.jar"]
+
+# Run the JAR when the container starts
+ENTRYPOINT ["java", "-jar", "calculator.jar"]
