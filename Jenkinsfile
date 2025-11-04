@@ -1,5 +1,6 @@
 pipeline {
-    agent 'Jenkinsworker'
+    agent { label 'Jenkinsworker' }
+
 
     environment {
         JAR_NAME = "calculator-1.0-SNAPSHOT.jar"
