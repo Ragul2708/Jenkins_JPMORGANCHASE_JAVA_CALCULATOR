@@ -7,11 +7,15 @@ pipeline {
     }
 
     stages {
+
         stage('Checkout') {
             steps {
-                git 'https://github.com/Ragul2708/Jenkins_JPMORGANCHASE_JAVA_CALCULATOR.git'
+                git branch: 'feature/java_calculator',
+                    url: 'https://github.com/Ragul2708/Jenkins_JPMORGANCHASE_JAVA_CALCULATOR.git'
             }
         }
+
+        
 
         stage('Build') {
             steps {
