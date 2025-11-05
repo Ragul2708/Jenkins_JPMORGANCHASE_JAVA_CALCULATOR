@@ -1,3 +1,10 @@
+package com.example.calculator;
+
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 @RestController
 @RequestMapping("/calculator")
 public class CalculatorController {
@@ -18,7 +25,7 @@ public class CalculatorController {
     }
 
     @GetMapping("/divide")
-    public int divide(@RequestParam int a, @RequestParam int b) {
+    public double divide(@RequestParam double a, @RequestParam double b) {
         return a / b;
     }
 }
