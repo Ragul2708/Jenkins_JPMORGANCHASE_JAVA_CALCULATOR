@@ -4,19 +4,13 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'feature/java_calculator', url: 'https://github.com/Ragul2708/Jenkins_JPMORGANCHASE_JAVA_CALCULATOR.git'
+                checkout scm
             }
         }
 
         stage('Build') {
             steps {
-                sh 'mvn clean package'
-            }
-        }
-
-        stage('Verify JAR') {
-            steps {
-                sh 'ls -lh target/'
+                sh 'mvn clean package -DskipTests'
             }
         }
 
@@ -26,31 +20,14 @@ pipeline {
             }
         }
 
-        stage('Stop Old Container') {
+        stage('Run Docker Container') {
             steps {
-                script {
-                    sh '''
-                    if [ "$(docker ps -aq -f name=calculator-app)" ]; then
-                        docker rm -f calculator-app || true
-                    fi
-                    '''
-                }
+                sh '''
+                docker stop calculator-app || true
+                docker rm calculator-app || true
+                docker run -d --name calculator-app -p 9090:8080 ragul18/calculator-app:latest
+                '''
             }
-        }
-
-        stage('Run New Container') {
-            steps {
-                sh 'docker run -d --name calculator-app -p 9090:8080 ragul18/calculator-app:latest'
-            }
-        }
-    }
-
-    post {
-        success {
-            echo "✅ Deployment Success — Access at http://<EC2-Public-IP>:9090"
-        }
-        failure {
-            echo "❌ Deployment Failed — Check Jenkins logs."
         }
     }
 }
