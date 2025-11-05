@@ -10,23 +10,20 @@ pipeline {
 
         stage('Build') {
             steps {
-                sh 'mvn clean package -DskipTests'
+                sh 'mvn clean package'
             }
         }
 
-        stage('Build Docker Image') {
+        stage('Docker Build') {
             steps {
-                sh 'docker build --no-cache -t ragul18/calculator-app:latest .'
+                sh 'docker build -t ragul18/calculator-app:latest .'
             }
         }
 
-        stage('Run Docker Container') {
+        stage('Run Container') {
             steps {
-                sh '''
-                docker stop calculator-app || true
-                docker rm calculator-app || true
-                docker run -d --name calculator-app -p 9090:8080 ragul18/calculator-app:latest
-                '''
+                sh 'docker rm -f calculator-app || true'
+                sh 'docker run -d -p 8080:8080 --name calculator-app ragul18/calculator-app:latest'
             }
         }
     }
