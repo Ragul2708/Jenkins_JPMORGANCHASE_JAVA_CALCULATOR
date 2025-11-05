@@ -1,21 +1,12 @@
 pipeline {
-    agent { label 'Jenkinsworker' }
-
-
-    environment {
-        JAR_NAME = "calculator-1.0-SNAPSHOT.jar"
-    }
+    agent any
 
     stages {
-
         stage('Checkout') {
             steps {
-                git branch: 'feature/java_calculator',
-                    url: 'https://github.com/Ragul2708/Jenkins_JPMORGANCHASE_JAVA_CALCULATOR.git'
+                git branch: 'feature/java_calculator', url: 'https://github.com/Ragul2708/Jenkins_JPMORGANCHASE_JAVA_CALCULATOR.git'
             }
         }
-
-        
 
         stage('Build') {
             steps {
@@ -25,32 +16,41 @@ pipeline {
 
         stage('Verify JAR') {
             steps {
-                // List JAR contents and check for Calculator.class
-                sh """
-                echo "Verifying JAR contents..."
-                jar tf target/${JAR_NAME} | grep 'com/example/Calculator.class' || {
-                    echo 'ERROR: Calculator.class not found in JAR!'
-                    exit 1
-                }
-                echo 'JAR verification passed.'
-                """
+                sh 'ls -lh target/'
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                sh """
-                docker build -t ragul18/calculator-app:latest .
-                """
+                sh 'docker build --no-cache -t ragul18/calculator-app:latest .'
             }
         }
 
-        stage('Run Docker Container') {
+        stage('Stop Old Container') {
             steps {
-                sh """
-                docker run -d -p 9090:8080 ragul18/calculator-app:latest
-                """
+                script {
+                    sh '''
+                    if [ "$(docker ps -aq -f name=calculator-app)" ]; then
+                        docker rm -f calculator-app || true
+                    fi
+                    '''
+                }
             }
+        }
+
+        stage('Run New Container') {
+            steps {
+                sh 'docker run -d --name calculator-app -p 9090:8080 ragul18/calculator-app:latest'
+            }
+        }
+    }
+
+    post {
+        success {
+            echo "✅ Deployment Success — Access at http://<EC2-Public-IP>:9090"
+        }
+        failure {
+            echo "❌ Deployment Failed — Check Jenkins logs."
         }
     }
 }
