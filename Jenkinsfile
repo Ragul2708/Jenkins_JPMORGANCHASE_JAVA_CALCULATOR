@@ -4,26 +4,28 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                checkout scm
+                git branch: 'feature/java_calculator', url: 'https://github.com/Ragul2708/Jenkins_JPMORGANCHASE_JAVA_CALCULATOR.git'
             }
         }
 
-        stage('Build') {
+        stage('Build with Maven') {
             steps {
-                sh 'mvn clean package'
+                sh 'mvn clean package spring-boot:repackage'
             }
         }
 
-        stage('Docker Build') {
+        stage('Build Docker Image') {
             steps {
                 sh 'docker build -t ragul18/calculator-app:latest .'
             }
         }
 
-        stage('Run Container') {
+        stage('Run Docker Container') {
             steps {
-                sh 'docker rm -f calculator-app || true'
-                sh 'docker run -d -p 8080:8080 --name calculator-app ragul18/calculator-app:latest'
+                sh '''
+                docker rm -f calculator-app || true
+                docker run -d -p 9090:8080 --name calculator-app ragul18/calculator-app:latest
+                '''
             }
         }
     }
