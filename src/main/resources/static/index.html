@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html>
 <head>
     <title>Calculator App</title>
@@ -60,4 +60,113 @@
 </script>
 
 </body>
+</html> -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator App</title>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            backdrop-filter: blur(15px);
+            padding: 40px 60px;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+        }
+
+        h1 {
+            margin-bottom: 25px;
+            font-weight: 600;
+        }
+
+        input {
+            width: 120px;
+            padding: 12px;
+            margin: 10px;
+            border-radius: 10px;
+            border: none;
+            font-size: 18px;
+            outline: none;
+            text-align: center;
+        }
+
+        .btn-container {
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 12px 25px;
+            margin: 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: 0.3s;
+            background: #ffffff;
+            color: #333;
+            font-weight: 600;
+        }
+
+        button:hover {
+            background: #ffd369;
+            transform: scale(1.1);
+        }
+
+        .result {
+            margin-top: 25px;
+            font-size: 28px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+    <h1>✨ Calculator App ✨</h1>
+
+    <input type="number" id="a" placeholder="Enter A" />
+    <input type="number" id="b" placeholder="Enter B" />
+
+    <div class="btn-container">
+        <button onclick="calculate('add')">Add</button>
+        <button onclick="calculate('subtract')">Subtract</button>
+        <button onclick="calculate('multiply')">Multiply</button>
+        <button onclick="calculate('divide')">Divide</button>
+    </div>
+
+    <div class="result" id="result">Result: --</div>
+</div>
+
+<script>
+    function calculate(operation) {
+        const a = document.getElementById("a").value;
+        const b = document.getElementById("b").value;
+
+        fetch(`/calculator/${operation}?a=${a}&b=${b}`)
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById("result").innerHTML = "Result: " + data;
+            });
+    }
+</script>
+
+</body>
 </html>
+
